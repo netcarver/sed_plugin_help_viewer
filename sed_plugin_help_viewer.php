@@ -3,7 +3,7 @@
 $plugin['name'] = 'sed_plugin_help_viewer';
 $plugin['version'] = '0.2';
 $plugin['author'] = 'Stephen Dickinson';
-$plugin['author_uri'] = 'txp-plugins.netcarving.com';
+$plugin['author_uri'] = 'http://txp-plugins.netcarving.com';
 $plugin['description'] = "Quickly check your plugin's help section from the plugin cache dirctory.";
 
 $plugin['type'] = 1; // 0 = regular plugin; public only, 1 = admin plugin; public + admin, 2 = library
