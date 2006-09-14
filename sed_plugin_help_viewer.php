@@ -8,7 +8,7 @@ $plugin['description'] = "Quickly check your plugin's help section from the plug
 
 $plugin['type'] = 1; // 0 = regular plugin; public only, 1 = admin plugin; public + admin, 2 = library
 
-@include_once('zem_tpl.php');
+@include_once('../zem_tpl.php');
 
 if (0) {
 ?>
