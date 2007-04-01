@@ -1,7 +1,7 @@
 <?php
 
 $plugin['name'] = 'sed_plugin_help_viewer';
-$plugin['version'] = '0.2';
+$plugin['version'] = '0.3';
 $plugin['author'] = 'Stephen Dickinson';
 $plugin['author_uri'] = 'http://txp-plugins.netcarving.com';
 $plugin['description'] = "Quickly check your plugin's help section from the plugin cache dirctory.";
@@ -30,13 +30,17 @@ div#sed_help h3 { color: #693; font: bold 12px Arial, sans-serif; letter-spacing
 
 h1(#intro). Plugin Help Section Viewer.
 
-sed_plugin_help_viewer plugin, v0.2 (May 19th, 2006)
+sed_plugin_help_viewer plugin, v0.3 (April 1st, 2007)
 
 Allows you to view the help section of any plugin in your cache directory.
 
 If the file matches ZEM's template then the help section will get run through the textile formatter before display, otherwise it will be treated as straight HTML.
 
 h2(#versions). Version History
+
+v0.3
+
+* Updated to allow processing of TxP 4.0.4 plugins marked as @allow_html_help@.
 
 v0.2
 
@@ -67,17 +71,17 @@ if(@txpinterface == 'admin') {
 function sed_plugin_help_viewer ($event, $step) {
 	if( !$step or !in_array( $step , array('view_help') ) ) {
 		_sed_list_plugins_from_cache();
-		} 
-	else 
+		}
+	else
 		$step();
 	}
-	
+
 function view_help($message='') {
 	pagetop(gTxt('edit_plugins'),$message);
 
 	$filename = gps('filename');
 	$plugin = array();
-	
+
 	if( !empty($filename) ) {
 		$content = file($filename);
 		$source_lines = count($content);
@@ -87,7 +91,7 @@ function view_help($message='') {
 			$content[$i] = rtrim($content[$i]);
 			}
 
-		$format = 'unknown';	
+		$format = 'unknown';
 
 		//	Check for ZEM plugin...
 		$plugin['help'] = _zem_extract_section($content, 'HELP');
@@ -103,15 +107,25 @@ function view_help($message='') {
 		echo startTable('edit');
 		switch( $format ) {
 			case 'zem_help':echo tr(tda( '<p>Plugin is in zem template format.</p>', ' width="600"'));
-							$plugin['css']  = _zem_extract_section($content, 'CSS' );
-							include_once txpath.'/lib/classTextile.php';
-							if ( class_exists('Textile')  )  {
-								$textile = new Textile();
-								$plugin['help'] = $plugin['css']."\n".$textile->TextileThis($plugin['help']);
-								echo tr(tda( '<p>Extracted and Textile processed help section follows&#8230;</p><hr>', ' width="600"'));
+							if( !isset( $plugin['allow_html_help'] ) or ( 0 === $plugin['allow_html_help'] ) )
+								{
+								#	Textile...
+								$plugin['css']  = _zem_extract_section($content, 'CSS' );
+								include_once txpath.'/lib/classTextile.php';
+								if ( class_exists('Textile')  )  {
+									$textile = new Textile();
+									$plugin['help'] = $plugin['css']."\n".$textile->TextileThis($plugin['help']);
+									echo tr(tda( '<p>Extracted and Textile processed help section follows&#8230;</p><hr>', ' width="600"'));
+									}
+								else
+									echo tr(tda( '<p>Extracted help section follows, <strong>Textile Processing Failed</strong>&#8230;</p><hr>', ' width="600"'));
 								}
 							else
-								echo tr(tda( '<p>Extracted help section follows, <strong>Textile Processing Failed</strong>&#8230;</p><hr>', ' width="600"'));
+								{
+								# (x)html...
+								$plugin['css']  = _zem_extract_section($content, 'CSS' );
+								$plugin['help'] = $plugin['css']."\n".$plugin['help'];
+								}
 							echo tr(tda($plugin['help'], ' width="600"'));
 							break;
 			case 'ied_help':echo tr(tda( '<p>Plugin is in ied template format.</p>', ' width="600"'));
@@ -129,7 +143,7 @@ function view_help($message='') {
 		echo( "Help not accessible from that file." );
 		}
 	}
-	
+
 function _zem_extract_section($lines, $section) {
 	$start_delim = "# --- BEGIN PLUGIN $section ---";
 	$end_delim = "# --- END PLUGIN $section ---";
@@ -145,7 +159,7 @@ function _zem_extract_section($lines, $section) {
 
 	return join("\n", $content);
 	}
-	
+
 function _ied_extract_section($lines, $section) {
 //	$meta_delim = '--- PLUGIN METADATA ---';
 	$help_delim = '--- BEGIN PLUGIN HELP ---';
@@ -161,13 +175,13 @@ function _ied_extract_section($lines, $section) {
 
 	return join("\n", $content);
 	}
-	
+
 function _sed_list_plugins_from_cache($message='') {
 	pagetop(gTxt('edit_plugins'),$message);
 	echo startTable('list');
-	
+
 	$filenames = array();
-	
+
 	if (!empty($GLOBALS['prefs']['plugin_cache_dir'])) {
 		$dir = dir($GLOBALS['prefs']['plugin_cache_dir']);
 		while ($file = $dir->read()) {
@@ -210,7 +224,7 @@ function _sed_list_plugins_from_cache($message='') {
 			}
 		}
 
-		
+
 	echo endTable();
 	}
 
