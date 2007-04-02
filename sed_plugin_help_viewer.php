@@ -30,7 +30,7 @@ div#sed_help h3 { color: #693; font: bold 12px Arial, sans-serif; letter-spacing
 
 h1(#intro). Plugin Help Section Viewer.
 
-sed_plugin_help_viewer plugin, v0.3 (April 1st, 2007)
+sed_plugin_help_viewer plugin, v0.3 (April 2nd, 2007)
 
 Allows you to view the help section of any plugin in your cache directory.
 
@@ -124,7 +124,7 @@ function view_help($message='') {
 								{
 								# (x)html...
 								$plugin['css']  = _zem_extract_section($content, 'CSS' );
-								$plugin['help'] = $plugin['css']."\n".$plugin['help'];
+								$plugin['help'] = $plugin['css']."\n".$plugin['help_raw'];
 								}
 							echo tr(tda($plugin['help'], ' width="600"'));
 							break;
