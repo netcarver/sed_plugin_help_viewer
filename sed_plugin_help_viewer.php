@@ -2,7 +2,7 @@
 
 $plugin['name'] = 'sed_plugin_help_viewer';
 $plugin['version'] = '0.3';
-$plugin['author'] = 'Stephen Dickinson';
+$plugin['author'] = 'Netcarver';
 $plugin['author_uri'] = 'http://txp-plugins.netcarving.com';
 $plugin['description'] = "Quickly check your plugin's help section from the plugin cache dirctory.";
 
