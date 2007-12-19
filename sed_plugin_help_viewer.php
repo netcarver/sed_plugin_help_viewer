@@ -1,12 +1,23 @@
 <?php
 
+$plugin['revision'] = '$LastChangedRevision$';
+
+$revision = @$plugin['revision'];
+if( !empty( $revision ) )
+	{
+	$parts = explode( ' ' , trim( $revision , '$' ) );
+	$revision = $parts[1];
+	if( !empty( $revision ) )
+		$revision = '.' . $revision;
+	}
+
 $plugin['name'] = 'sed_plugin_help_viewer';
-$plugin['version'] = '0.3';
+$plugin['version'] = '0.3' . $revision;
 $plugin['author'] = 'Netcarver';
 $plugin['author_uri'] = 'http://txp-plugins.netcarving.com';
 $plugin['description'] = "Quickly check your plugin's help section from the plugin cache dirctory.";
 
-$plugin['type'] = 1; // 0 = regular plugin; public only, 1 = admin plugin; public + admin, 2 = library
+$plugin['type'] = 1;
 
 @include_once('../zem_tpl.php');
 
