@@ -4,39 +4,44 @@ $plugin['name'] = 'sed_plugin_help_viewer';
 $plugin['version'] = '0.3';
 $plugin['author'] = 'Netcarver';
 $plugin['author_uri'] = 'http://txp-plugins.netcarving.com';
-$plugin['description'] = "Quickly check your plugin's help section from the plugin cache dirctory.";
-
+$plugin['description'] = 'Quickly check your plugin\'s help section from the plugin cache dirctory.';
 $plugin['type'] = 1;
 
 @include_once('../zem_tpl.php');
 
 # --- BEGIN PLUGIN CODE ---
-if(@txpinterface == 'admin') {
+if(@txpinterface == 'admin') 
+	{
 	add_privs('sed_plugin_help_viewer','1,2');
 	register_tab('extensions', 'sed_plugin_help_viewer', 'Help Viewer');
 	register_callback('sed_plugin_help_viewer', 'sed_plugin_help_viewer');
 	}
 
-function sed_plugin_help_viewer ($event, $step) {
-	if( !$step or !in_array( $step , array('view_help') ) ) {
+function sed_plugin_help_viewer ($event, $step) 
+	{
+	if( !$step or !in_array( $step , array('view_help') ) ) 
+		{
 		_sed_list_plugins_from_cache();
 		}
 	else
 		$step();
 	}
 
-function view_help($message='') {
+function view_help($message='') 
+	{
 	pagetop(gTxt('edit_plugins'),$message);
 
 	$filename = gps('filename');
 	$plugin = array();
 
-	if( !empty($filename) ) {
+	if( !empty($filename) ) 
+		{
 		$content = file($filename);
 		$source_lines = count($content);
 		$format = 'none';
 
-		for ($i=0; $i < $source_lines; $i++) {
+		for ($i=0; $i < $source_lines; $i++) 
+			{
 			$content[$i] = rtrim($content[$i]);
 			}
 
@@ -46,7 +51,8 @@ function view_help($message='') {
 		$plugin['help'] = _zem_extract_section($content, 'HELP');
 		if( '' != $plugin['help'] )
 			$format = 'zem_help';
-		else {
+		else 
+			{
 			//	check for ied style help section...
 			$plugin['help'] = _ied_extract_section($content, 'HELP');
 			if ('' != $plugin['help'] )
@@ -54,14 +60,16 @@ function view_help($message='') {
 			}
 
 		echo startTable('edit');
-		switch( $format ) {
+		switch( $format ) 
+			{
 			case 'zem_help':echo tr(tda( '<p>Plugin is in zem template format.</p>', ' width="600"'));
 							if( !isset( $plugin['allow_html_help'] ) or ( 0 === $plugin['allow_html_help'] ) )
 								{
 								#	Textile...
 								$plugin['css']  = _zem_extract_section($content, 'CSS' );
 								include_once txpath.'/lib/classTextile.php';
-								if ( class_exists('Textile')  )  {
+								if ( class_exists('Textile')  )  
+									{
 									$textile = new Textile();
 									$plugin['help'] = $plugin['css']."\n".$textile->TextileThis($plugin['help']);
 									echo tr(tda( '<p>Extracted and Textile processed help section follows&#8230;</p><hr>', ' width="600"'));
@@ -85,15 +93,16 @@ function view_help($message='') {
 							break;
 			}
 
-
 		echo endTable();
 		}
-	else {
+	else 
+		{
 		echo( "Help not accessible from that file." );
 		}
 	}
 
-function _zem_extract_section($lines, $section) {
+function _zem_extract_section($lines, $section) 
+	{
 	$start_delim = "# --- BEGIN PLUGIN $section ---";
 	$end_delim = "# --- END PLUGIN $section ---";
 
@@ -126,19 +135,23 @@ function _ied_extract_section($lines, $section)
 	return join("\n", $content);
 	}
 
-function _sed_list_plugins_from_cache($message='') {
+function _sed_list_plugins_from_cache($message='') 
+	{
 	pagetop(gTxt('edit_plugins'),$message);
 	echo startTable('list');
 
 	$filenames = array();
 
-	if (!empty($GLOBALS['prefs']['plugin_cache_dir'])) {
+	if (!empty($GLOBALS['prefs']['plugin_cache_dir'])) 
+		{
 		$dir = dir($GLOBALS['prefs']['plugin_cache_dir']);
 		while ($file = $dir->read()) {
-			if($file != "." && $file != "..") {
+			if($file != "." && $file != "..") 
+				{
 				$fileaddr = $GLOBALS['prefs']['plugin_cache_dir'].'/'.$file;
 
-				if (!is_dir($fileaddr)) {
+				if (!is_dir($fileaddr)) 
+					{
 					$filenames[]=$fileaddr;
 					}
 				}
@@ -155,11 +168,14 @@ function _sed_list_plugins_from_cache($message='') {
 
 	echo assHead('plugin','','','','','','Link');
 
-	if( count( $filenames ) > 0 ) {
-		foreach($filenames as $filename) {
+	if( count( $filenames ) > 0 ) 
+		{
+		foreach($filenames as $filename) 
+			{
 			$elink = '<a href="?event=sed_plugin_help_viewer&#38;step=view_help&#38;filename='.$filename.'">'.gTxt('help').'</a>';
 			$fileext= array_pop(explode ('.',$filename));
-			if ($fileext=='php') {
+			if ($fileext=='php') 
+				{
 				echo
 				tr(
 				 td( tag($filename,'div',' style="color:gray;border:0px solid gray;padding:1px 2px 2px 1px;"').(isset($plugin['name'])?$plugin['name'].'<br />':'').' ' )
