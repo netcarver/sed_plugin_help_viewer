@@ -1,7 +1,7 @@
 <?php
 
 $plugin['name'] = 'sed_plugin_help_viewer';
-$plugin['version'] = '0.3';
+$plugin['version'] = '0.4';
 $plugin['author'] = 'Netcarver';
 $plugin['author_uri'] = 'http://txp-plugins.netcarving.com';
 $plugin['description'] = 'Quickly check your plugin\'s help section from the plugin cache dirctory.';
@@ -211,6 +211,10 @@ Allows you to view the help section of any plugin in your cache directory.
 If the file matches ZEM's template then the help section will get run through the textile formatter before display, otherwise it will be treated as straight HTML.
 
 h2(#versions). Version History
+
+v0.4
+
+* Update to get rid of the tiny "help" click target and replace it with the entire filename.
 
 v0.3
 
