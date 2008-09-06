@@ -71,7 +71,7 @@ function view_help($message='')
 								if ( class_exists('Textile')  )  
 									{
 									$textile = new Textile();
-									$plugin['help'] = $plugin['css']."\n".$textile->TextileThis($plugin['help']);
+									$plugin['help'] = $plugin['css'].n.$textile->TextileThis($plugin['help']);
 									echo tr(tda( '<p>Extracted and Textile processed help section follows&#8230;</p><hr>', ' width="600"'));
 									}
 								else
@@ -81,7 +81,7 @@ function view_help($message='')
 								{
 								# (x)html...
 								$plugin['css']  = _zem_extract_section($content, 'CSS' );
-								$plugin['help'] = $plugin['css']."\n".$plugin['help_raw'];
+								$plugin['help'] = $plugin['css'].n.$plugin['help_raw'];
 								}
 							echo tr(tda($plugin['help'], ' width="600"'));
 							break;
@@ -97,7 +97,7 @@ function view_help($message='')
 		}
 	else 
 		{
-		echo( "Help not accessible from that file." );
+		echo( 'Help not accessible from that file.' );
 		}
 	}
 
@@ -115,7 +115,7 @@ function _zem_extract_section($lines, $section)
 
 	$content = array_slice($lines, $start, $end-$start);
 
-	return join("\n", $content);
+	return join(n, $content);
 	}
 
 function _ied_extract_section($lines, $section) 
@@ -132,7 +132,7 @@ function _ied_extract_section($lines, $section)
 	$end_line = array_search($end_delim, $lines);
 	$content = array_slice($lines, $help_line, $end_line-$help_line);
 
-	return join("\n", $content);
+	return join(n, $content);
 	}
 
 function _sed_list_plugins_from_cache($message='') 
@@ -146,9 +146,9 @@ function _sed_list_plugins_from_cache($message='')
 		{
 		$dir = dir($GLOBALS['prefs']['plugin_cache_dir']);
 		while ($file = $dir->read()) {
-			if($file != "." && $file != "..") 
+			if($file != '.' && $file != '..') 
 				{
-				$fileaddr = $GLOBALS['prefs']['plugin_cache_dir'].'/'.$file;
+				$fileaddr = $GLOBALS['prefs']['plugin_cache_dir'].DS.$file;
 
 				if (!is_dir($fileaddr)) 
 					{
@@ -163,29 +163,20 @@ function _sed_list_plugins_from_cache($message='')
 	echo tr(
 	tda(
 	tag('Plugins found in the plugin cache directory: '.$GLOBALS['prefs']['plugin_cache_dir'],'h1')
-	,' colspan="7" style="border:0;height:50px;text-align:left"')
+	,' colspan="1" style="border:0;height:50px;text-align:left"')
 	);
 
-	echo assHead('plugin','','','','','','Link');
+	echo assHead('plugin');
 
 	if( count( $filenames ) > 0 ) 
 		{
-		foreach($filenames as $filename) 
+		foreach($filenames as $filename)
 			{
-			$elink = '<a href="?event=sed_plugin_help_viewer&#38;step=view_help&#38;filename='.$filename.'">'.gTxt('help').'</a>';
 			$fileext= array_pop(explode ('.',$filename));
-			if ($fileext=='php') 
+			if ($fileext==='php')
 				{
-				echo
-				tr(
-				 td( tag($filename,'div',' style="color:gray;border:0px solid gray;padding:1px 2px 2px 1px;"').(isset($plugin['name'])?$plugin['name'].'<br />':'').' ' )
-				.td( '&nbsp;')
-				.td( '&nbsp;',  10)
-				.td( '&nbsp;', 260)
-				.td( '')
-				.td( tag('&nbsp;','span',' style="color:gray"') )
-				.td( strong($elink) )
-				);
+				$elink = '<a href="?event=sed_plugin_help_viewer&#38;step=view_help&#38;filename='.$filename.'">'.(isset($plugin['name']) ? $plugin['name'] : $filename).'</a>';
+				echo tr( td( strong($elink) ) );
 				}
 			}
 		}
